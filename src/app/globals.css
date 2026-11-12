@@ -1,11 +1,118 @@
 @import "tailwindcss";
 
+/*
+  E-Bazar design tokens
+  ---------------------
+  paan    brand green, taken from the deep green of a paan leaf and the flag
+  haldi   turmeric yellow, used only for Flash Sale and offers
+  lal     red, used only for discounts and price cuts
+  canvas  cool green-grey app background, cards sit on it in white
+  ink     text, a green-tinted dark so it sits with the brand colour
+*/
+@theme {
+  --font-sans: "Onest Variable", "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Gabarito Variable", "Hind Siliguri", ui-sans-serif, system-ui, sans-serif;
+
+  --color-paan-50: #eaf5ef;
+  --color-paan-100: #d2eadd;
+  --color-paan-200: #a6d4bb;
+  --color-paan-500: #138a63;
+  --color-paan-600: #0b6e4f;
+  --color-paan-700: #07583f;
+  --color-paan-800: #064431;
+  --color-paan-900: #04301f;
+
+  --color-haldi-50: #fff7db;
+  --color-haldi-100: #ffefb3;
+  --color-haldi-300: #fbd25a;
+  --color-haldi-400: #f6bf1c;
+  --color-haldi-500: #e9aa00;
+  --color-haldi-800: #6b4a00;
+
+  --color-lal-50: #fdecea;
+  --color-lal-500: #e0412f;
+  --color-lal-600: #c7311f;
+
+  --color-canvas: #f1f4f1;
+  --color-line: #dfe5e1;
+  --color-line-strong: #c9d2cc;
+
+  --color-ink: #16231e;
+  --color-ink-2: #46554f;
+  --color-ink-3: #7b8882;
+
+  --radius-tile: 0.875rem;
+  --radius-panel: 1.25rem;
+
+  --shadow-lift: 0 1px 2px rgb(22 35 30 / 0.06), 0 8px 24px -12px rgb(22 35 30 / 0.18);
+  --shadow-bar: 0 -1px 0 rgb(22 35 30 / 0.06), 0 -8px 24px -16px rgb(22 35 30 / 0.25);
+}
+
 :root {
   color-scheme: light;
 }
 
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
-  background: #ffffff;
-  color: #111827;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01";
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-paan-600);
+  outline-offset: 2px;
+}
+
+/* Horizontal rails scroll without a visible scrollbar but stay scrollable */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Prices and countdown digits never jitter as they change */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  The discount price tag: a small tag with a punched hole, the one shape that
+  repeats across the app. Clip-path keeps it a single element.
+*/
+.price-tag {
+  --hole: 3px;
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);
+  -webkit-mask: radial-gradient(circle var(--hole) at 8px 50%, transparent 98%, #000 100%);
+  mask: radial-gradient(circle var(--hole) at 8px 50%, transparent 98%, #000 100%);
+  padding-left: 14px;
+}
+
+/* Skeleton shimmer, disabled for people who ask for less motion */
+.skeleton {
+  background: linear-gradient(90deg, #e6ebe7 0%, #f3f6f4 50%, #e6ebe7 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+  * {
+    scroll-behavior: auto !important;
+  }
 }

@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# E-Bazar
 
-## Getting Started
+A Bangladeshi online marketplace built with Next.js 16 (App Router, Cache
+Components), Prisma and PostgreSQL. See [ROADMAP.md](./ROADMAP.md) for the
+19-day build plan and what each day delivers.
 
-First, run the development server:
+## Run it locally
+
+You need Node 20+ and a local PostgreSQL database called `ebazar`.
 
 ```bash
+npm install                 # also runs `prisma generate`
+cp .env.example .env        # then set DATABASE_URL for your machine
+npx prisma migrate dev      # creates the tables
+npx prisma db seed          # demo users, categories, 20 products, 3 coupons
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Demo logins (used from Day 2): `customer@ebazar.test` / `Customer@123` and
+`admin@ebazar.test` / `Admin@123`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> `npm run build` reads the catalogue from the database to prerender the
+> shop, so the database must be running when you build.
 
-## Learn More
+## Where things live
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/app/                 routes: /, /categories, /c/[slug], /search, /products,
+                         /deals, /flash-sale, /p/[slug], /account, /help
+                         and "coming on Day N" screens for the rest
+src/components/layout/   header, search, category menu, mobile tab bar, footer
+src/components/home/     banner carousel, flash sale, countdown, coupon card
+src/components/listing/  listing page, price filter, sort, mobile filter sheet
+src/components/product/  product card, price, discount tag, product art
+src/lib/catalog.ts       cached catalogue queries (tag: "catalog")
+src/lib/content.ts       home banners and featured coupon (moves to DB on Day 16)
+src/app/globals.css      design tokens (colours, fonts, radii)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Prisma uses the Rust-free client (`engineType = "client"` +
+  `@prisma/adapter-pg`): queries go through the `pg` driver, with no native
+  engine binary to download or deploy.
+- Fonts are installed from npm (`@fontsource`), so builds work offline.
+- Products have no photos yet; each one gets an illustrated tile until image
+  uploads arrive. If `imageUrl` is set, the photo is shown instead.

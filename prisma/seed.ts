@@ -1,7 +1,10 @@
 import { PrismaClient, DiscountType, Role } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 
 const slugify = (s: string) =>
   s
@@ -111,7 +114,9 @@ async function main() {
       price,
       discountPrice,
       stock,
-      imageUrl: `https://picsum.photos/seed/${slug}/600/600`,
+      // Real photos arrive with seller uploads (Day 3). Until then the UI draws
+      // an illustrated tile per product, which looks better than random stock.
+      imageUrl: null,
       categoryId: category.id,
     };
     await prisma.product.upsert({
